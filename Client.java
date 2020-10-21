@@ -1,80 +1,84 @@
 import java.io.*;
-import java.util.*; 
-import java.net.*; 
-import java.util.Scanner; 
-import java.math.BigInteger; 
-import java.security.MessageDigest; 
+import java.util.*;
+import java.net.*;
+import java.util.Scanner;
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-public class Client 
-{ 
-	final static int ServerPort = 1234; 
+public class Client
+{
+	final static int ServerPort = 1234;
 
-	public static void main(String args[]) throws UnknownHostException, IOException 
-	{ 
-		Scanner scn = new Scanner(System.in); 
-		
-		// getting localhost ip 
-		InetAddress ip = InetAddress.getByName("localhost"); 
-		
-		// establish the connection 
-		Socket s = new Socket(ip, ServerPort); 
-		
-		// obtaining input and out streams 
-		DataInputStream dis = new DataInputStream(s.getInputStream()); 
-		DataOutputStream dos = new DataOutputStream(s.getOutputStream()); 
+	public static void main(String args[]) throws UnknownHostException, IOException
+	{
+		Scanner scn = new Scanner(System.in);
 
-		// sendMessage thread 
-		Thread sendMessage = new Thread(new Runnable() 
-		{ 
+		// getting localhost ip
+		InetAddress ip = InetAddress.getByName("localhost");
+
+		// establish the connection
+		Socket s = new Socket(ip, ServerPort);
+
+		// obtaining input and out streams
+		DataInputStream dis = new DataInputStream(s.getInputStream());
+		DataOutputStream dos = new DataOutputStream(s.getOutputStream());
+
+		// sendMessage thread
+		Thread sendMessage = new Thread(new Runnable()
+		{
 			@Override
-			public void run() { 
-				while (true) { 
+			public void run() {
+				while (true) {
 
-					// read the message to deliver. 
-					String msg = scn.nextLine(); 
-					
-					try { 
-						// write on the output stream 
-						dos.writeUTF(msg); 
-					} catch (IOException e) { 
-						e.printStackTrace(); 
-					} 
-				} 
-			} 
-		}); 
-		
-		// readMessage thread 
-		Thread readMessage = new Thread(new Runnable() 
-		{ 
+					// read the message to deliver.
+					String msg = scn.nextLine();
+
+					try {
+						// write on the output stream
+						dos.writeUTF(msg);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+
+		// readMessage thread
+		Thread readMessage = new Thread(new Runnable()
+		{
 			@Override
-			public void run() { 
+			public void run() {
 
-				while (true) { 
-					try { 
-						// read the message sent to this client 
-						String msg = dis.readUTF(); 
-						System.out.println(msg); 
-						boolean b = checking(msg);
-						dos.writeUTF(b?"1":"0");
-					} catch (IOException e) { 
+				while (true) {
+					try {
+						// read the message sent to this client
+						String msg = dis.readUTF();
+						System.out.println(msg);
+						String b = checking(msg);
+						if (b != null) {
+							dos.writeUTF("1#" + b);
+						} else {
+							dos.writeUTF("0#NotFound");
+						}
+					} catch (IOException e) {
 
-						e.printStackTrace(); 
-					} 
-				} 
-			} 
-		}); 
+						e.printStackTrace();
+					}
+				}
+			}
+		});
 
-		sendMessage.start(); 
-		readMessage.start(); 
-	} 
+		sendMessage.start();
+		readMessage.start();
+	}
 
-	private static boolean checking(String msg) {
-		StringTokenizer st = new StringTokenizer(msg, "#"); 
+	private static String checking(String msg) {
+		StringTokenizer st = new StringTokenizer(msg, "#");
 		String t = st.nextToken();
 		int blockNo = Integer.parseInt(st.nextToken());
 		int b = blockNo;
-		
+
 		int ii = b*4194304;
 
 		for(;ii<4194304*(b+1);ii++) {
@@ -104,32 +108,32 @@ public class Client
 			System.out.println(blockNo);
 
 			if(firstFive.equals(s)) {
-				return true;
+				return m;
 			}
 		}
-		return false;
+		return null;
 	}
 
-	public static String getMd5(String input) 
-    { 
-        try { 
-  
-            // Static getInstance method is called with hashing MD5 
-            MessageDigest md = MessageDigest.getInstance("MD5"); 
-  
-            // digest() method is called to calculate message digest 
-            //  of an input digest() return array of byte 
-            byte[] messageDigest = md.digest(input.getBytes()); 
-  
-            // Convert byte array into signum representation 
-            BigInteger no = new BigInteger(1, messageDigest); 
-  
-            // Convert message digest into hex value 
-            String hashtext = no.toString(16); 
-            while (hashtext.length() < 32) { 
-                hashtext = "0" + hashtext; 
-            } 
-            return hashtext; 
+	public static String getMd5(String input)
+    {
+        try {
+
+            // Static getInstance method is called with hashing MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+
+            // digest() method is called to calculate message digest
+            //  of an input digest() return array of byte
+            byte[] messageDigest = md.digest(input.getBytes());
+
+            // Convert byte array into signum representation
+            BigInteger no = new BigInteger(1, messageDigest);
+
+            // Convert message digest into hex value
+            // String hashtext = no.toString(16);
+            // while (hashtext.length() < 32) {
+                // hashtext = "0" + hashtext;
+            // }
+            return no.toString(10);
         }  
   
         // For specifying wrong message digest algorithms 
