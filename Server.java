@@ -133,7 +133,7 @@ class ClientHandler implements Runnable
 				{
 					if (mc.name.equals(this.name) && mc.isloggedin == true)
 					{
-						if(Server.blocks.size() == 10) {
+						if(Server.blocks.size() == 1023) {
 							Date nowD =new Date();
 							long diff = nowD.getTime() - Server.startDateTime.getTime();
 							long diffSec = diff/1000%60;
