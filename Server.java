@@ -128,55 +128,55 @@ class ClientHandler implements Runnable
 				String f = st.nextToken();
 				String l=st.nextToken();
 				int checkValue = Integer.parseInt(f);
-				if(checkValue == 0) {
-					for (ClientHandler mc : Server.ar)
+
+				for (ClientHandler mc : Server.ar)
+				{
+					if (mc.name.equals(this.name) && mc.isloggedin == true)
 					{
-						if (mc.name.equals(this.name) && mc.isloggedin==true)
-						{
-							if(Server.blocks.size()==1023){
-								break;
-							}
-							mc.dos.writeUTF(Server.roll+"#"+(Server.blocks.size()-1));
-							Server.blocks.add(mc.id);
-							System.out.println(mc.name+"#"+(Server.blocks.size()-1));
+						if(Server.blocks.size() == 1023) {
 							break;
 						}
+						if (checkValue != 0) {
+							System.out.println("["+this.name+"] " + l);
+						}
+						mc.dos.writeUTF(Server.roll+"#"+(Server.blocks.size()-1));
+						Server.blocks.add(mc.id);
+						System.out.println(mc.name+"#"+(Server.blocks.size()-1));
+						break;
 					}
-				} else {
-					System.out.println("["+this.name+"] " + l);
 				}
-			
-				
-				// break the string into message and recipient part 
-				// StringTokenizer st = new StringTokenizer(received, "#"); 
-				// String MsgToSend = st.nextToken(); 
-				// String recipient = st.nextToken(); 
+
+
+				// break the string into message and recipient part
+				// StringTokenizer st = new StringTokenizer(received, "#");
+				// String MsgToSend = st.nextToken();
+				// String recipient = st.nextToken();
 
 				// System.out.println(Server.roll);
 
-				// for (ClientHandler mc : Server.ar) 
-				// { 
-					// if (mc.name.equals(this.name) && mc.isloggedin==true) 
-					// { 
-						// mc.dos.writeUTF(this.name+" : "+MsgToSend); 
-						// break; 
-					// } 
-				// } 
+				// for (ClientHandler mc : Server.ar)
+				// {
+					// if (mc.name.equals(this.name) && mc.isloggedin==true)
+					// {
+						// mc.dos.writeUTF(this.name+" : "+MsgToSend);
+						// break;
+					// }
+				// }
 
-			} catch (IOException e) { 
-				
-				e.printStackTrace(); 
-			} 
-			
-		} 
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+
+		}
 		try
-		{ 
-			// closing resources 
-			this.dis.close(); 
-			this.dos.close(); 
-			
-		}catch(IOException e){ 
-			e.printStackTrace(); 
-		} 
-	} 
-} 
+		{
+			// closing resources
+			this.dis.close();
+			this.dos.close();
+
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+}
