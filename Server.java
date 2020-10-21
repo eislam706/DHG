@@ -4,24 +4,21 @@ import java.net.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 // Server class
 public class Server
 {
-
-	// Vector to store active clients
-	static Vector<ClientHandler> ar = new Vector<>();
-
-	// counter for clients
-	static int i = 0;
-	static String roll = "";
-	static List<Integer> blocks = new ArrayList<>();
+	static Vector<ClientHandler> ar = new Vector<>();			// Vector for store Client
+	static int i = 0; 											// Client counter
+	static String roll = "";									// Roll no take input from server use only single input
+	static List<Integer> blocks = new ArrayList<>();			// List to keep track for all block which assigned to client
+	static Date startDateTime = null;							// First client received date time
 
 	public static void main(String[] args) throws IOException
 	{
-		// server is listening on port 1234
-		ServerSocket ss = new ServerSocket(1234);
-        Scanner scan = new Scanner(System.in);
+		ServerSocket ss = new ServerSocket(1234); 				// Server listening port 1234
+        Scanner scan = new Scanner(System.in);					// Take input roll no
 		System.out.println("Please enter roll no:");
 		roll = scan.nextLine();
 
@@ -31,8 +28,7 @@ public class Server
 		// client request
 		while (true)
 		{
-			// Accept the incoming request
-			s = ss.accept();
+			s = ss.accept(); 									// Accept the incoming request from client
 
 			System.out.println("New client request received : " + s);
 
@@ -66,17 +62,21 @@ public class Server
 		}
 	}
 
+	/**
+	 * For send response to client
+	 * @params - id
+	 * @params - DataOutputStream
+	 */
 	private static void sendClientRoll(int id, DataOutputStream dos) throws IOException {
-		String name = "c"+i;
-		int sizB = blocks.size();
-		sizB = sizB==0?0:sizB-1;
+		String name = "c" + i;									// Setting client name
 		for (ClientHandler mc : ar)
 		{
-			if (mc.name.equals(name) && mc.isloggedin==true)
+			if (mc.name.equals(name) && mc.isloggedin == true)
 			{
-				blocks.add(i);
-				dos.writeUTF(roll+"#"+(blocks.size()-1));
-				System.out.println(mc.name+"#"+(blocks.size()-1));
+				blocks.add(i);									// Add client id to the list
+				dos.writeUTF(roll+"#"+(blocks.size()-1));		// Send roll no and block number
+				System.out.println(mc.name + "#" + (blocks.size() - 1));
+				startDateTime = new Date();						// Setting first client response date time
 				break;
 			}
 		}
@@ -133,7 +133,14 @@ class ClientHandler implements Runnable
 				{
 					if (mc.name.equals(this.name) && mc.isloggedin == true)
 					{
-						if(Server.blocks.size() == 1023) {
+						if(Server.blocks.size() == 10) {
+							Date nowD =new Date();
+							long diff = nowD.getTime() - Server.startDateTime.getTime();
+							long diffSec = diff/1000%60;
+							long diffMin = diff/(60*1000)%60;
+							long diffHou = diff/(60*60*1000);
+
+							System.out.println("Time: "+diffHou+" hours, "+diffMin+" minutes, "+diffSec+" seconds");
 							break;
 						}
 						if (checkValue != 0) {
