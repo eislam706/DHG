@@ -39,7 +39,7 @@ public class Server
 			System.out.println("Creating a new handler for this client...");
 
 			// Create a new handler object for handling this request.
-			ClientHandler mtch = new ClientHandler(s, "c" + i, i, dis, dos);
+			ClientHandler mtch = new ClientHandler(s, "client-" + i, i, dis, dos);
 
 			// Create a new Thread with this object.
 			Thread t = new Thread(mtch);
@@ -68,7 +68,7 @@ public class Server
 	 * @params - DataOutputStream
 	 */
 	private static void sendClientRoll(int id, DataOutputStream dos) throws IOException {
-		String name = "c" + i;									// Setting client name
+		String name = "client-" + i;									// Setting client name
 		for (ClientHandler mc : ar)
 		{
 			if (mc.name.equals(name) && mc.isloggedin == true)
@@ -95,8 +95,7 @@ class ClientHandler implements Runnable
 	public int id;
 
 	// constructor
-	public ClientHandler(Socket s, String name, int id,
-							DataInputStream dis, DataOutputStream dos) {
+	public ClientHandler(Socket s, String name, int id, DataInputStream dis, DataOutputStream dos) {
 		this.dis = dis;
 		this.dos = dos;
 		this.name = name;
@@ -133,7 +132,7 @@ class ClientHandler implements Runnable
 				{
 					if (mc.name.equals(this.name) && mc.isloggedin == true)
 					{
-						if(Server.blocks.size() == 1023) {
+						if(Server.blocks.size() == 1024) {
 							Date nowD =new Date();
 							long diff = nowD.getTime() - Server.startDateTime.getTime();
 							long diffSec = diff/1000%60;
@@ -152,23 +151,6 @@ class ClientHandler implements Runnable
 						break;
 					}
 				}
-
-
-				// break the string into message and recipient part
-				// StringTokenizer st = new StringTokenizer(received, "#");
-				// String MsgToSend = st.nextToken();
-				// String recipient = st.nextToken();
-
-				// System.out.println(Server.roll);
-
-				// for (ClientHandler mc : Server.ar)
-				// {
-					// if (mc.name.equals(this.name) && mc.isloggedin==true)
-					// {
-						// mc.dos.writeUTF(this.name+" : "+MsgToSend);
-						// break;
-					// }
-				// }
 
 			} catch (IOException e) {
 

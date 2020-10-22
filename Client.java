@@ -85,8 +85,8 @@ public class Client
 			blockNo = ii;
 
 			// System.out.println(t+" "+blockNo);
-			String s = "37";
-			// String s = "00";
+			// String s = "37";
+			String s = "00";
 
 			if (t.length()<4){
 				for(int i=0;i<4-t.length();i++){
@@ -129,11 +129,11 @@ public class Client
             BigInteger no = new BigInteger(1, messageDigest);
 
             // Convert message digest into hex value
-            // String hashtext = no.toString(16);
-            // while (hashtext.length() < 32) {
-                // hashtext = "0" + hashtext;
-            // }
-            return no.toString(10);
+            String hashtext = no.toString(16);
+            while (hashtext.length() < 32) {
+                hashtext = "0" + hashtext;
+            }
+            return hashtext;
         }  
   
         // For specifying wrong message digest algorithms 
